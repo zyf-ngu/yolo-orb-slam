@@ -25,3 +25,6 @@ include<unistd.h>
 解决办法：
 ①修改cmakelist.txt，将opencv3.0改为4.2，我遇到两个地方，一个是orbslam2文件夹，另一个好像是DBoW2文件夹，可以根据错误信息查看。
 https://blog.csdn.net/weixin_42584917/article/details/111308873
+
+错误 ‘CV_LOAD_IMAGE_UNCHANGED’ was not declared in this scope
+cv::IMREAD_UNCHANGED
