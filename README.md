@@ -28,3 +28,15 @@ https://blog.csdn.net/weixin_42584917/article/details/111308873
 
 错误 ‘CV_LOAD_IMAGE_UNCHANGED’ was not declared in this scope
 cv::IMREAD_UNCHANGED
+
+bash: python: command not found
+软链接没弄。
+ln -s /usr/bin/python3.8 /usr/bin/python
+ln: failed to create symbolic link '/usr/bin/python': File exists
+ln -sf /usr/bin/python3.9 /usr/bin/python
+
+
+运行build-ros.sh时出现问题一:
+[rosbuild] rospack found package "ORB_SLAM2" at "", but the current   directory is "/home/angelo/ORB_SLAM2/Examples/ROS/ORB_SLAM2".  You should   double-check your ROS_PACKAGE_PATH to ensure that packages are found in the   correct precedence order.
+jia export lujing
+
