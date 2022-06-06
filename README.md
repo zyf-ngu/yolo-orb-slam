@@ -45,3 +45,7 @@ error while loading shared libraries: libg2o_core.so: cannot open shared object 
 在build文件夹目录环境下输入：sudo ldconfig
 然后编译就可以了。
 因为g2o刚装,没生效。
+
+下载associate.py，https://vision.in.tum.de/data/datasets/rgbd-dataset/tools放在数据集下，在数据集下打开一个终端执行以下命令生成：associations.txt
+python associate.py rgb.txt depth.txt > associations.txt
+
