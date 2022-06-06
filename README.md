@@ -40,3 +40,8 @@ ln -sf /usr/bin/python3.9 /usr/bin/python
 [rosbuild] rospack found package "ORB_SLAM2" at "", but the current   directory is "/home/angelo/ORB_SLAM2/Examples/ROS/ORB_SLAM2".  You should   double-check your ROS_PACKAGE_PATH to ensure that packages are found in the   correct precedence order.
 jia export lujing
 
+
+error while loading shared libraries: libg2o_core.so: cannot open shared object file: No such file or directory解决方法
+在build文件夹目录环境下输入：sudo ldconfig
+然后编译就可以了。
+因为g2o刚装,没生效。
