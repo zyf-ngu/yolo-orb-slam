@@ -48,4 +48,10 @@ error while loading shared libraries: libg2o_core.so: cannot open shared object 
 
 下载associate.py，https://vision.in.tum.de/data/datasets/rgbd-dataset/tools放在数据集下，在数据集下打开一个终端执行以下命令生成：associations.txt
 python associate.py rgb.txt depth.txt > associations.txt
-
+AttributeError: 'dict_keys' object has no attribute 'remove'
+将associate.py中第86行87行的
+    first_keys = first_list.keys()
+    second_keys = second_list.keys()
+改为
+    first_keys = list(first_list.keys())
+    second_keys = list(second_list.keys())
