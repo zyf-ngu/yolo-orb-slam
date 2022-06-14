@@ -55,3 +55,33 @@ AttributeError: 'dict_keys' object has no attribute 'remove'
 改为
     first_keys = list(first_list.keys())
     second_keys = list(second_list.keys())
+    
+pcl1.8.1 vtk7.1.1 qt5
+https://blog.csdn.net/way7486chundan/article/details/110296785?utm_term=ubuntu16.04%E5%AE%89%E8%A3%85vtk7&utm_medium=distribute.pc_aggpage_search_result.none-task-blog-2~all~sobaiduweb~default-0-110296785-null-null&spm=3001.4430#t8
+
+kdtree.so.1.8.0:undefined reference to `LZ4_decompress_safe_continue’
+解决办法：
+/pcl/build/kdtree/CMakeFiles/pcl_kdtree.dir/下的link.txt里在末尾写上：-llz4
+
+#include <boost/uuid/sha1.hpp>undefined
+#if (BOOST_VERSION >= 106600)
+#include <boost/uuid/detail/sha1.hpp>
+#else
+#include <boost/uuid/sha1.hpp>
+#endif
+
+    报错内容：
+
+error: no matching function for call to  
+boost::uuids::random_generator_pure::random_generator_pure(boost::random::mt19937*
+
+    1
+    2
+
+则更改
+gedit /home/mjy/repo/pcl-1.8/pcl-master-1.8/pcl-master/outofcore/include/pcl/outofcore/impl/octree_disk_container.hpp
+
+注释以下代码：
+
+    //template<typename PointT>
+    //boost::uuids::random_generator OutofcoreOctreeDiskContainer<PointT>::uuid_gen_ (&rand_gen_);
