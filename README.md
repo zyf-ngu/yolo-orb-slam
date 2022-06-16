@@ -63,7 +63,9 @@ kdtree.so.1.8.0:undefined reference to `LZ4_decompress_safe_continue’
 解决办法：
 /pcl/build/kdtree/CMakeFiles/pcl_kdtree.dir/下的link.txt里在末尾写上：-llz4
 
-#include <boost/uuid/sha1.hpp>undefined
+报错#include <boost/uuid/sha1.hpp>undefined
+
+
 #if (BOOST_VERSION >= 106600)
 #include <boost/uuid/detail/sha1.hpp>
 #else
@@ -75,8 +77,7 @@ kdtree.so.1.8.0:undefined reference to `LZ4_decompress_safe_continue’
 error: no matching function for call to  
 boost::uuids::random_generator_pure::random_generator_pure(boost::random::mt19937*
 
-    1
-    2
+   
 
 则更改
 gedit /home/mjy/repo/pcl-1.8/pcl-master-1.8/pcl-master/outofcore/include/pcl/outofcore/impl/octree_disk_container.hpp
@@ -85,3 +86,9 @@ gedit /home/mjy/repo/pcl-1.8/pcl-master-1.8/pcl-master/outofcore/include/pcl/out
 
     //template<typename PointT>
     //boost::uuids::random_generator OutofcoreOctreeDiskContainer<PointT>::uuid_gen_ (&rand_gen_);
+    
+ 报错/home/zyf/pcl-pcl-1.8.1/segmentation/include/pcl/segmentation/ground_plane_comparator.h:150:17: error: invalid initialization of reference of type ‘const std::vector<float>&’ from expression of type ‘const boost::shared_ptr<std::vector<float> >’
+  150 |         return (plane_coeff_d_);
+
+改为return (*plane_coeff_d_);
+
