@@ -1,94 +1,95 @@
-# yolo-orb-slam
-semantics mapping and navigation
-Prerequisites
-Pangolin
-git clone -b v0.5 https://
-https://blog.csdn.net/Robert_Q/article/details/121690089
-OpenCV
-https://blog.csdn.net/qq_20373723/article/details/119328559
-Eigen3
-DBoW2 and g2o (Included in Thirdparty folder)
-
-We use modified versions of the DBoW2 library to perform place recognition and g2o library to perform non-linear optimizations. Both modified libraries (which are BSD) are included in the Thirdparty folder.
-ORB-SLAM3
-https://blog.csdn.net/BigHandsome2020/article/details/123458612#t6
-
-发现源码里没有euroc_examples.sh文件
-https://github.com/electech6/ORB_SLAM3_detailed_comments
-
-ORB-slam2编译时报错‘usleep’ was not declared in this scope
-根据报错信息在文件添加
-include<unistd.h>
-
-编译会产生关于opencv的错误，类似"FATAL_ERROR "OpenCV > 2.4.3 not found."的错误
-
-解决办法：
-①修改cmakelist.txt，将opencv3.0改为4.2，我遇到两个地方，一个是orbslam2文件夹，另一个好像是DBoW2文件夹，可以根据错误信息查看。
-https://blog.csdn.net/weixin_42584917/article/details/111308873
-
-错误 ‘CV_LOAD_IMAGE_UNCHANGED’ was not declared in this scope
-cv::IMREAD_UNCHANGED
-
-bash: python: command not found
-软链接没弄。
-ln -s /usr/bin/python3.8 /usr/bin/python
-ln: failed to create symbolic link '/usr/bin/python': File exists
-ln -sf /usr/bin/python3.9 /usr/bin/python
+###########################################################################
+#    THE KITTI VISION BENCHMARK: SEMANTIC/INSTANCE SEGMENATION BENCHMARKS #
+#                   Andreas Geiger         Hassan Abu Alhaija             #
+#          Max Planck Institute for Intelligent Systems, Tübingen         #
+#                          Heidelberg University                          #
+#                             www.cvlibs.net                              #
+###########################################################################
 
 
-运行build-ros.sh时出现问题一:
-[rosbuild] rospack found package "ORB_SLAM2" at "", but the current   directory is "/home/angelo/ORB_SLAM2/Examples/ROS/ORB_SLAM2".  You should   double-check your ROS_PACKAGE_PATH to ensure that packages are found in the   correct precedence order.
-jia export lujing
+
+This file describes the KITTI semantic/instance segmentation 2015 benchmarks,
+consisting of 200 training and 200 test image pairs for each task. Ground truth 
+has been acquired by manual segmentation by people.
 
 
-error while loading shared libraries: libg2o_core.so: cannot open shared object file: No such file or directory解决方法
-在build文件夹目录环境下输入：sudo ldconfig
-然后编译就可以了。
-因为g2o刚装,没生效。
+Dataset description:
+====================
 
-下载associate.py，https://vision.in.tum.de/data/datasets/rgbd-dataset/tools放在数据集下，在数据集下打开一个终端执行以下命令生成：associations.txt
-python associate.py rgb.txt depth.txt > associations.txt
-AttributeError: 'dict_keys' object has no attribute 'remove'
-将associate.py中第86行87行的
-    first_keys = first_list.keys()
-    second_keys = second_list.keys()
-改为
-    first_keys = list(first_list.keys())
-    second_keys = list(second_list.keys())
-    
-pcl1.8.1 vtk7.1.1 qt5
-https://blog.csdn.net/way7486chundan/article/details/110296785?utm_term=ubuntu16.04%E5%AE%89%E8%A3%85vtk7&utm_medium=distribute.pc_aggpage_search_result.none-task-blog-2~all~sobaiduweb~default-0-110296785-null-null&spm=3001.4430#t8
+The Kitti 2015 segmentation format (described below) is used as common format for all datasets. 
+The image names are prefixed by the dataset's benchmark name.
+Exactly the same image names are used for the input images and the ground truth files.
+```
+datasets_kitti2015/
+   test/
+      image_2/
+         <dataset>_<img_name>.png
+         ...
+   training/
+      image_2/
+         <dataset>_<img_name>.png
+         ...
+      instance/
+         <dataset>_<img_name>.png
+         ...
+      semantic/
+         <dataset>_<img_name>.png
+         ...
+```
 
-kdtree.so.1.8.0:undefined reference to `LZ4_decompress_safe_continue’
-解决办法：
-/pcl/build/kdtree/CMakeFiles/pcl_kdtree.dir/下的link.txt里在末尾写上：-llz4
+The "semantic" folder contains the semantic segmentation ground truth for the training images. Each file is a single channel uint8 8-bit PNG image with each pixel value representing its semantic label ID. The "instance" folder contains the combined instance and semantic segmentation ground truth. Each file is a single channel uint16 16-bit PNG image where the lower 8 bits of each pixel value are its instance ID, while the higher 8 bits of each pixel value are its semantic labels ID. Instance IDs start from 1 for each semantic class (ex. car:1,2,3 ... etc. - buiding:1,2,3 ... etc.). Instance ID value of 0 means no instance ground truth is available and should be ignored for instance segmentation. An example code for reading the instance and semantic segmentation ground truth from the combined ground truth file in python could look like this :
+```
+import scipy.misc as sp
+instance_semantic_gt = sp.imread('instance/<image name>.png')
+instance_gt = instance_semantic_gt  % 256
+semantic_gt = instance_semantic_gt // 256
 
-报错#include <boost/uuid/sha1.hpp>undefined
+```
+The labels IDs, names and instance classes of the Cityscapes dataset are used and can be found [here](https://github.com/mcordts/cityscapesScripts/blob/master/cityscapesscripts/helpers/labels.py)
 
+#### Output ####
 
-#if (BOOST_VERSION >= 106600)
-#include <boost/uuid/detail/sha1.hpp>
-#else
-#include <boost/uuid/sha1.hpp>
-#endif
+The output structure should be analogous to the input.
+If your algorithm is called MYALGO, the result files for your instance
+or semantic segmentation method can be named and placed as follows:
+```
+kitti2015_results/
+    test/
+        MYALGO_instance/
+            pred_list/
+                <dataset>_<img_name>.txt
+                ...
+            pred_img/
+                <dataset>_<img_name>_000.png
+                <dataset>_<img_name>_001.png
+                ...
+        MYALGO_semantic/
+            <dataset>_<img_name>.png
+            ...
+```
 
-    报错内容：
+The txt files of the instance segmentation should look as follows:
+```
+relPathPrediction1 labelIDPrediction1 confidencePrediction1
+relPathPrediction2 labelIDPrediction2 confidencePrediction2
+relPathPrediction3 labelIDPrediction3 confidencePrediction3
+...
+```
 
-error: no matching function for call to  
-boost::uuids::random_generator_pure::random_generator_pure(boost::random::mt19937*
+For example, the Kitti2015_000000_10.txt may contain:
+```
+../pred_img/Kitti2015_000000_10_000.png 026 0.976347
+../pred_img/Kitti2015_000000_10_001.png 026 0.973782
+../pred_img/Kitti2015_000000_10_002.png 026 0.973202
+...
+```
 
-   
+with binary instance masks in `kitti2015_results/test/MYALGO_instance/pred_img/`:
+```
+Kitti2015_000000_10_000.png
+Kitti2015_000000_10_001.png
+Kitti2015_000000_10_002.png
+...
+```
 
-则更改
-gedit /home/mjy/repo/pcl-1.8/pcl-master-1.8/pcl-master/outofcore/include/pcl/outofcore/impl/octree_disk_container.hpp
-
-注释以下代码：
-
-    //template<typename PointT>
-    //boost::uuids::random_generator OutofcoreOctreeDiskContainer<PointT>::uuid_gen_ (&rand_gen_);
-    
- 报错/home/zyf/pcl-pcl-1.8.1/segmentation/include/pcl/segmentation/ground_plane_comparator.h:150:17: error: invalid initialization of reference of type ‘const std::vector<float>&’ from expression of type ‘const boost::shared_ptr<std::vector<float> >’
-  150 |         return (plane_coeff_d_);
-
-改为return (*plane_coeff_d_);
 
